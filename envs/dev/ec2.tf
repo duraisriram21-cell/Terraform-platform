@@ -1,9 +1,9 @@
 # ---------- EC2 for dev environment ----------
 
 # Use the default VPC (we'll build custom VPC tomorrow)
-data "aws_vpc" "default" {
-  default = true
-}
+#data "aws_vpc" "default" {
+ # default = true
+#}
 
 # Get the latest Amazon Linux 2023 AMI in this region
 data "aws_ami" "amazon_linux" {
@@ -25,7 +25,7 @@ data "aws_ami" "amazon_linux" {
 resource "aws_security_group" "web_sg" {
   name        = "${local.name_prefix}-web-sg"
   description = "Web security group for ${local.name_prefix}"
-  vpc_id      = data.aws_vpc.default.id
+  vpc_id      = aws_vpc.main.id
 
   # SSH from anywhere (you can later restrict this to your IP)
   ingress {
@@ -65,6 +65,7 @@ resource "aws_instance" "web" {
   key_name      = "terraform-dev-key"
 
   vpc_security_group_ids = [aws_security_group.web_sg.id]
+  subnet_id     = aws_subnet.public_az1.id
 
   user_data = <<-EOF
 #!/bin/bash
