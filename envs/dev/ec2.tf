@@ -1,9 +1,4 @@
-# ---------- EC2 for dev environment ----------
-
-# Use the default VPC (we'll build custom VPC tomorrow)
-#data "aws_vpc" "default" {
- # default = true
-#}
+/*
 
 # Get the latest Amazon Linux 2023 AMI in this region
 data "aws_ami" "amazon_linux" {
@@ -82,3 +77,30 @@ EOF
     }
   )
 }
+*/
+
+module "web_ec2" {
+  source = "../../modules/ec2-web"
+
+  vpc_id        = aws_vpc.main.id
+  subnet_id     = aws_subnet.public_az1.id
+  instance_type = "t3.micro"
+  key_name      = "terraform-dev-key"
+
+  name_prefix = local.name_prefix
+  tags        = local.common_tags
+
+  user_data = <<-EOF
+    #!/bin/bash
+    yum install -y httpd
+    systemctl enable httpd
+    systemctl start httpd
+    echo "Hello from Sri's Terraform EC2 (module)!" > /var/www/html/index.html
+  EOF
+}
+
+
+
+
+
+

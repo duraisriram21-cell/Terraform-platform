@@ -1,17 +1,12 @@
-variable "project_name" {
-  type = string
+# Variables for the S3 bucket module
+
+variable "bucket_name" {
+  description = "Name of the S3 bucket to create."
+  type        = string
 }
 
-variable "environment" {
-  type = string
-}
-
-variable "bucket_suffix" {
-  type    = string
-  default = "demo-bucket"
-}
-
-variable "owner" {
-  type    = string
-  default = "Sri"
+variable "tags" {
+  description = "Tags to apply to the S3 bucket."
+  type        = map(string)
+  default     = {}
 }
